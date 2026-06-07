@@ -4,9 +4,41 @@
 
 int main(void) { /* excplicitely shows no given args */
 
+    /* image variables */
+    FILE *pin = stdin;
+    char line[1024];
+
+    /* initialises the width and height variables */
+    int width = -1;
+    int height = -1;
+    int max_colour = -1;
+
+    /* reads and discards the first PPM file value */
+    fgets(line, sizeof(line), pin);
+    
+    /* loops through each line until a width and height value is parsed */
+    while (fgets(line, sizeof(line), pin) != NULL) {
+
+        /* this skips commented lines */
+        if (line[0] == '#') {
+            continue; 
+        }
+
+        /* this attempts to parse 2 values (w and h) */
+        if (sscanf(line, "%d %d", &width, &height) == 2) {
+            break;
+        }
+    }
+
+    if ( fgets(line, sizeof(line), pin) != NULL) {
+        sscanf(line, "%d", &max_colour);
+    }
+
+
+    printf("width=%d, height=%d", width, height);
+    
+
     /* window variables */
-    const int width = 900;
-    const int height = 600;
     const char *title = "Image Viewer";
     int flags = 0;
 
@@ -24,9 +56,6 @@ int main(void) { /* excplicitely shows no given args */
     Uint8 r,g,b;
     r = 0xFF;
     b = g = 0x00;
-
-    int x = 50;
-    int y = 50;
 
 
     /* this sets the colour / pixel format to be used in the rect */
