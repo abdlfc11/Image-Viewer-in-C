@@ -52,20 +52,27 @@ int main(void) { /* excplicitely shows no given args */
     /* this clears the background (makes it black) */
     SDL_FillSurfaceRect(psurface, NULL, SDL_MapRGB(SDL_GetPixelFormatDetails(psurface->format), NULL, 0, 0, 0));
 
-    /* this sets the rgb values to be used in the pixel format */
-    Uint8 r,g,b;
-    r = 0xFF;
-    b = g = 0x00;
+    
 
 
-    /* this sets the colour / pixel format to be used in the rect */
-    Uint32 colour = SDL_MapRGB(SDL_GetPixelFormatDetails(psurface->format), NULL, r, g, b);
+    
 
     /* creates a rect structure */
     SDL_Rect pixel = { .x=0, .y=0, .w=1, .h=1 };
 
-    for (int x=0; x<width; x++) {
-        for (int y=0; y<height; y++) {
+    Uint32 colour = 0;
+
+    for (int y=0; y<height; y++) {
+        for (int x=0; x<width; x++) {
+
+            /* this retrieves each RGB value from each pixel */
+            Uint8 r,g,b;
+            r = (char) getchar();
+            g = (char) getchar();
+            b = (char) getchar();
+
+            /* this sets the colour / pixel format to be used in the rect */
+            colour = SDL_MapRGB(SDL_GetPixelFormatDetails(psurface->format), NULL, r, g, b);
 
             /* this updates the x and y values of the pixel rect */
             pixel.x = x;
@@ -81,12 +88,22 @@ int main(void) { /* excplicitely shows no given args */
     /* this allows macOS to process the window state immediately */
     SDL_PumpEvents();
 
-    /* keeps the window open for 3 seconds (3000ms)*/
-    SDL_Delay(5000);
+    bool running = true;
 
-    /* cleans memory before exiting */
-    SDL_DestroyWindow(pwindow);
-    SDL_Quit();
+    while (running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {  // poll until all events are handled!
+            if (event.type == SDL_EVENT_QUIT) {
+
+                /* sets the running variable to false */
+                running = false;
+
+                /* cleans memory before exiting */
+                SDL_DestroyWindow(pwindow);
+                SDL_Quit();
+            }
+        }
+    }
 
     return 0;
 
